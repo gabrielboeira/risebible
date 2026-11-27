@@ -23,7 +23,7 @@ Sem as chaves do Supabase, o app abre em **modo demonstração**: as contas e o 
 ## Ligar o Supabase
 
 1. Crie um projeto em supabase.com.
-2. No **SQL Editor**, rode o arquivo `supabase/schema.sql`. Ele cria as tabelas, as regras de segurança (cada adolescente só vê os próprios dados) e o perfil automático no cadastro.
+2. No **SQL Editor**, rode o arquivo `supabase/schema.sql`. Ele cria as tabelas, as permissões de acesso para usuários logados, as regras de segurança (cada adolescente só vê os próprios dados) e o perfil automático no cadastro. Pode rodar de novo sem perder dados. Se o app mostrar "permission denied for table ...", é porque as permissões não foram aplicadas: rode o arquivo outra vez.
 3. Em **Authentication → Providers → Email**, deixe o e-mail ligado. Escolha se quer exigir confirmação de e-mail (mais seguro, mas alguns adolescentes travam nessa etapa). O app trata os dois casos.
 4. Em **Authentication → URL Configuration**, coloque a URL do app (ex.: `https://rise.vercel.app`) em *Site URL* e em *Redirect URLs*. Isso faz o link de recuperação de senha funcionar.
 5. Copie `.env.example` para `.env.local` e preencha com a *Project URL* e a *anon public key* (Project Settings → API).

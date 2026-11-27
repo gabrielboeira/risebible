@@ -41,6 +41,15 @@ create table if not exists public.plan_progress (
   primary key (user_id, plan, chapter)
 );
 
+-- Permissões de tabela para quem está logado --------------------------------
+-- Sem estes GRANTs o app recebe "permission denied for table ..." (projetos em que
+-- o Supabase não expõe tabelas novas automaticamente). O RLS abaixo continua
+-- garantindo que cada um só acessa as próprias linhas. Visitante (anon) não recebe nada.
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on
+  public.profiles, public.devotional_days, public.verse_marks, public.plan_progress
+  to authenticated;
+
 -- Segurança: cada um só enxerga e altera o que é seu ------------------------
 alter table public.profiles        enable row level security;
 alter table public.devotional_days enable row level security;
