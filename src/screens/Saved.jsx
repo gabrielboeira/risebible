@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from '../components/ui.jsx'
 import { B, MES, refName, pk, fromYmd, devFor } from '../lib/bible.js'
 
 export default function Saved({ data, openRef, go }) {
@@ -21,7 +22,10 @@ export default function Saved({ data, openRef, go }) {
 
   return (
     <div className="saved">
-      <h1 className="title">Salvos</h1>
+      <div className="subhead">
+        <button className="btn icon ghost" onClick={() => go('perfil')} aria-label="Voltar para o perfil"><Icon name="left" /></button>
+        <h1 className="title">Salvos</h1>
+      </div>
       <div className="seg">
         <button className={tab === 'v' ? 'on' : ''} onClick={() => setTab('v')}>Versículos <small>{verses.length}</small></button>
         <button className={tab === 'n' ? 'on' : ''} onClick={() => setTab('n')}>Anotações <small>{notes.length}</small></button>
@@ -33,7 +37,7 @@ export default function Saved({ data, openRef, go }) {
         {tab === 'd' && (diary.length ? diary.map(([k, d]) => {
           const dt = fromYmd(k), dv = devFor(dt)
           return <li key={k} className="diary"><span className="lref">{dt.getDate()} de {MES[dt.getMonth()]} · {dv.t}</span><span className="lq">{dv.p}</span><span className="lnote">{d.answer}</span></li>
-        }) : <li className="empty"><b>Seu diário está vazio</b>Responda o “Pra pensar” do devocional e ele aparece aqui.<button className="btn" onClick={() => go('hoje')}>Ir para o devocional</button></li>)}
+        }) : <li className="empty"><b>Seu diário está vazio</b>Escreva no check-in do devocional e ele aparece aqui.<button className="btn" onClick={() => go('hoje')}>Ir para o devocional</button></li>)}
       </ul>
     </div>
   )

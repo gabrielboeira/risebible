@@ -5,7 +5,7 @@ import { B, PLANS, vk, refName, copyText } from '../lib/bible.js'
 const FS_KEY = 'rise:fs'
 const getFs = () => { try { return +localStorage.getItem(FS_KEY) || 19 } catch { return 19 } }
 
-export default function Bible({ data, act, say, pos, setPos }) {
+export default function Bible({ data, act, say, pos, setPos, go }) {
   const { b, c } = pos
   const [sel, setSel] = useState([])
   const [picker, setPicker] = useState(false)
@@ -43,6 +43,7 @@ export default function Bible({ data, act, say, pos, setPos }) {
     <div className="bible">
       <div className="rbar">
         <button className="btn pick" onClick={openPicker} aria-expanded={picker}><span>{bk.n} {c}</span><Icon name="down" size={18} /></button>
+        <button className="btn icon" onClick={() => go('buscar')} aria-label="Buscar na Bíblia"><Icon name="search" size={20} /></button>
         <button className="btn icon" onClick={() => setFs(Math.max(15, fs - 1))} aria-label="Diminuir letra">A−</button>
         <button className="btn icon" onClick={() => setFs(Math.min(28, fs + 1))} aria-label="Aumentar letra">A+</button>
       </div>
@@ -101,7 +102,7 @@ export default function Bible({ data, act, say, pos, setPos }) {
         <div className="sheet-in">
           <div className="sheet-head"><b>{label}</b><button className="btn icon ghost" onClick={() => setSel([])} aria-label="Fechar"><Icon name="x" /></button></div>
           <div className="swatches">
-            {['h1', 'h2', 'h3'].map(h => <button key={h} className={'sw ' + h} aria-label={{ h1: 'Destacar em lilás', h2: 'Destacar em verde-água', h3: 'Destacar em rosa' }[h]} onClick={() => { act.marks(keys, { color: h }); setSel([]) }} />)}
+            {['h1', 'h2', 'h3'].map(h => <button key={h} className={'sw ' + h} aria-label={{ h1: 'Destacar em laranja', h2: 'Destacar em verde-limão', h3: 'Destacar em azul' }[h]} onClick={() => { act.marks(keys, { color: h }); setSel([]) }} />)}
             <button className="sw none" aria-label="Remover destaque" onClick={() => { act.marks(keys, { color: null }); setSel([]) }} />
           </div>
           <div className="sheet-acts">

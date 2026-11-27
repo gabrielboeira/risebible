@@ -6,7 +6,7 @@ let IDX = null
 const index = () => IDX || (IDX = B.flatMap((bk, b) => bk.c.flatMap((vs, ci) => vs.map((t, vi) => [b, ci + 1, vi + 1, norm(t)]))))
 const IDEAS = ['ansiedade', 'coragem', 'luz do mundo', 'amigo', 'perdoa', 'não temas']
 
-export default function Search({ openRef }) {
+export default function Search({ openRef, go }) {
   const [q, setQ] = useState(() => { try { return sessionStorage.getItem('rise:q') || '' } catch { return '' } })
   const [scope, setScope] = useState('all')
   const [dq, setDq] = useState(q)
@@ -17,7 +17,10 @@ export default function Search({ openRef }) {
 
   return (
     <div className="search">
-      <h1 className="title">Buscar</h1>
+      <div className="subhead">
+        <button className="btn icon ghost" onClick={() => go('biblia')} aria-label="Voltar para a Bíblia"><Icon name="left" /></button>
+        <h1 className="title">Buscar</h1>
+      </div>
       <form role="search" onSubmit={e => { e.preventDefault(); e.target.querySelector('input').blur() }}>
         <Icon name="search" size={20} />
         <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Palavra ou frase" aria-label="Buscar na Bíblia" autoComplete="off" autoFocus />

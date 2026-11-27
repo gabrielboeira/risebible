@@ -7,11 +7,17 @@ import Bible from './screens/Bible.jsx'
 import Search from './screens/Search.jsx'
 import Saved from './screens/Saved.jsx'
 import Profile from './screens/Profile.jsx'
-import { Icon, Logo } from './components/ui.jsx'
+import Checkin from './screens/Checkin.jsx'
+import Community from './screens/Community.jsx'
+import { FlameMark, Icon, Logo } from './components/ui.jsx'
 
+// Barra inferior: início, bíblia, +, comunidade, perfil. Buscar abre pela Bíblia; Salvos, pelo Perfil.
 const TABS = [
-  ['hoje', 'Hoje', 'sun'], ['biblia', 'Bíblia', 'book'], ['buscar', 'Buscar', 'search'], ['salvos', 'Salvos', 'mark'], ['perfil', 'Perfil', 'user'],
+  ['hoje', 'Início', 'home'], ['biblia', 'Bíblia', 'book'], ['checkin', 'Check-in', 'plus'], ['comunidade', 'Comunidade', 'users'], ['perfil', 'Perfil', 'user'],
 ]
+const ROUTES = [...TABS.map(t => t[0]), 'buscar', 'salvos']
+const PARENT = { buscar: 'biblia', salvos: 'perfil' } // qual aba fica acesa nas telas internas
+const fromHash = () => { const h = location.hash.slice(1); return ROUTES.includes(h) ? h : null }
 
 export default function App() {
   const [ready, setReady] = useState(false)
@@ -20,7 +26,8 @@ export default function App() {
   const [data, setData] = useState(null)
   const [loadErr, setLoadErr] = useState('')
   const [tries, setTries] = useState(0)
-  const [tab, setTab] = useState(() => TABS.some(t => t[0] === location.hash.slice(1)) ? location.hash.slice(1) : 'hoje')
+  const [tab, setTab] = useState(() => fromHash() || 'hoje')
+  const [ciDay, setCiDay] = useState(null) // dia do check-in (null = hoje)
   const [pos, setPos] = useState({ b: 42, c: 3, v: null, n: 0 })
   const [toast, setToast] = useState('')
   const tRef = useRef()
@@ -43,11 +50,16 @@ export default function App() {
   }, [session?.user?.id, tries])
 
   useEffect(() => {
-    const f = () => { const h = location.hash.slice(1); if (TABS.some(t => t[0] === h)) setTab(h) }
+    const f = () => { const h = fromHash(); if (h) setTab(h) }
     addEventListener('hashchange', f); return () => removeEventListener('hashchange', f)
   }, [])
-  const go = t => { setTab(t); try { if (location.hash !== '#' + t) location.hash = t } catch { /* */ } scrollTo(0, 0) }
+  // check-in usa tema claro (creme): o fundo da página acompanha
+  const light = !!session && tab === 'checkin'
+  useEffect(() => { document.documentElement.classList.toggle('light', light) }, [light])
+
+  const go = t => { if (t === 'checkin') setCiDay(null); setTab(t); try { if (location.hash !== '#' + t) location.hash = t } catch { /* */ } scrollTo(0, 0) }
   const openRef = (b, c, v = null) => { setPos(p => ({ b, c, v, n: p.n + 1 })); go('biblia') }
+  const openCheckin = k => { go('checkin'); setCiDay(k) }
 
   // gravação otimista: atualiza a tela na hora e salva em segundo plano
   const commit = (next, saver) => {
@@ -82,31 +94,34 @@ export default function App() {
       </div>
     </div>
   )
-  if (!ready || session === undefined || (session && !data)) return <div className="boot"><Logo /><span className="spin" aria-label="Carregando" /></div>
+  if (!ready || session === undefined || (session && !data)) return <div className="boot"><FlameMark live className="boot-flame" /><Logo /><span className="sr-only" role="status">Carregando</span></div>
   if (!session) return <Auth demo={DEMO} />
 
   const st = streakInfo(data.days)
-  const props = { data, act, say, openRef, go, st, session, demo: DEMO }
+  const props = { data, act, say, openRef, openCheckin, go, st, session, demo: DEMO }
+  const lit = PARENT[tab] || tab
 
   return (
     <div className="app" data-tab={tab}>
       <header className="bar">
         <Logo small />
         <button className="pill" onClick={() => go('hoje')} aria-label={`${st.cur} dias seguidos`}>
-          <Icon name="flame" size={18} />{st.cur}
+          <FlameMark />{st.cur}
         </button>
       </header>
       <nav className="tabs" aria-label="Seções">
-          {TABS.map(([id, label, ic]) => (
-            <a key={id} href={'#' + id} aria-current={tab === id ? 'page' : undefined} onClick={e => { e.preventDefault(); go(id) }}>
-              <span className="tab-ic"><Icon name={ic} /></span>{label}
-            </a>
-          ))}
-        </nav>
+        {TABS.map(([id, label, ic]) => (
+          <a key={id} href={'#' + id} className={id === 'checkin' ? 'tab-plus' : undefined} aria-current={lit === id ? 'page' : undefined} aria-label={id === 'checkin' ? 'Fazer check-in' : undefined} onClick={e => { e.preventDefault(); go(id) }}>
+            <span className="tab-ic"><Icon name={ic} size={id === 'checkin' ? 26 : 22} /></span><span className="tab-l">{label}</span>
+          </a>
+        ))}
+      </nav>
       <main className="wrap" key={tab}>
         {tab === 'hoje' && <Today {...props} />}
         {tab === 'biblia' && <Bible {...props} pos={pos} setPos={setPos} />}
         {tab === 'buscar' && <Search {...props} />}
+        {tab === 'checkin' && <Checkin {...props} day={ciDay} key={ciDay || 'hoje'} />}
+        {tab === 'comunidade' && <Community {...props} />}
         {tab === 'salvos' && <Saved {...props} />}
         {tab === 'perfil' && <Profile {...props} />}
       </main>
