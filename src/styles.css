@@ -59,6 +59,8 @@ a { color: var(--acc-tx); text-underline-offset: 3px; text-decoration-thickness:
 .logo.sm .logo-t { font-size: 17px; letter-spacing: .16em }
 .boot { min-height: 100dvh; display: grid; place-items: center; align-content: center; gap: 28px; padding: 24px; text-align: center; color: var(--tx-2) }
 .boot p { max-width: 34ch }
+.boot-err { font-size: 13.5px; color: var(--tx-3); word-break: break-word }
+.boot-acts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center }
 .spin { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--s3); border-top-color: var(--acc-tx); animation: spin .7s linear infinite }
 @keyframes spin { to { transform: rotate(1turn) } }
 

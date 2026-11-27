@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { api, DEMO, saveDay, saveMark, savePlan, saveProfile } from './lib/backend.js'
+import { api, DEMO, authError, withTimeout, saveDay, saveMark, savePlan, saveProfile } from './lib/backend.js'
 import { loadContent, streakInfo } from './lib/bible.js'
 import Auth from './screens/Auth.jsx'
 import Today from './screens/Today.jsx'
@@ -18,6 +18,8 @@ export default function App() {
   const [fail, setFail] = useState(false)
   const [session, setSession] = useState(undefined)
   const [data, setData] = useState(null)
+  const [loadErr, setLoadErr] = useState('')
+  const [tries, setTries] = useState(0)
   const [tab, setTab] = useState(() => TABS.some(t => t[0] === location.hash.slice(1)) ? location.hash.slice(1) : 'hoje')
   const [pos, setPos] = useState({ b: 42, c: 3, v: null, n: 0 })
   const [toast, setToast] = useState('')
@@ -28,15 +30,17 @@ export default function App() {
 
   useEffect(() => { loadContent().then(() => setReady(true)).catch(() => setFail(true)) }, [])
   useEffect(() => {
-    api.session().then(setSession)
+    // se a sessão salva não puder ser lida (ou travar), cai no login em vez de carregar para sempre
+    withTimeout(api.session()).then(setSession).catch(() => setSession(s => (s === undefined ? null : s)))
     return api.onChange(s => { setSession(prev => { if (!prev && s) setTab('hoje'); return s }) })
   }, [])
   useEffect(() => {
+    setLoadErr('')
     if (!session) { setData(null); return }
     let on = true
-    api.load(session.user.id).then(d => on && setData(d)).catch(() => on && say('Não foi possível carregar seu progresso. Verifique a conexão.'))
+    withTimeout(api.load(session.user.id)).then(d => on && setData(d)).catch(e => on && setLoadErr(authError(e)))
     return () => { on = false }
-  }, [session?.user?.id])
+  }, [session?.user?.id, tries])
 
   useEffect(() => {
     const f = () => { const h = location.hash.slice(1); if (TABS.some(t => t[0] === h)) setTab(h) }
@@ -67,6 +71,17 @@ export default function App() {
   }
 
   if (fail) return <div className="boot"><Logo /><p>Não foi possível carregar a Bíblia. Verifique sua conexão e recarregue a página.</p></div>
+  if (session && loadErr) return (
+    <div className="boot">
+      <Logo />
+      <p>Não foi possível carregar seu progresso.</p>
+      <p className="boot-err" role="alert">{loadErr}</p>
+      <div className="boot-acts">
+        <button className="btn primary" onClick={() => { setLoadErr(''); setTries(n => n + 1) }}>Tentar de novo</button>
+        <button className="btn" onClick={() => api.signOut().catch(() => {}).finally(() => { setSession(null); setLoadErr('') })}>Sair da conta</button>
+      </div>
+    </div>
+  )
   if (!ready || session === undefined || (session && !data)) return <div className="boot"><Logo /><span className="spin" aria-label="Carregando" /></div>
   if (!session) return <Auth demo={DEMO} />
 

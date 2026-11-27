@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Icon, SQUADS } from '../components/ui.jsx'
+import { Icon } from '../components/ui.jsx'
 import { api } from '../lib/backend.js'
 import { MES, ymd, today, flameName } from '../lib/bible.js'
 
@@ -20,7 +20,6 @@ export default function Profile({ data, act, st, session, demo, say }) {
         <span className="avatar" aria-hidden="true">{(data.profile.name || '?').trim().charAt(0).toUpperCase() || '?'}</span>
         <div className="id-who">
           <h1>{data.profile.name || 'Sem nome'}</h1>
-          {data.profile.squad && <p>Squad {data.profile.squad}</p>}
           <p className="id-tier"><Icon name="flame" size={16} />{flameName(st.cur)}</p>
         </div>
         <dl className="stats">
@@ -55,11 +54,6 @@ export default function Profile({ data, act, st, session, demo, say }) {
         <label className="fld"><span>Nome</span>
           <input value={name} onChange={e => setName(e.target.value)} onBlur={() => { if (name.trim() && name.trim() !== data.profile.name) { act.profile({ name: name.trim() }); say('Nome atualizado') } }} />
         </label>
-        <fieldset className="fld"><legend>Squad</legend>
-          <div className="chips">{SQUADS.map(s => (
-            <button key={s} className={data.profile.squad === s ? 'on' : ''} aria-pressed={data.profile.squad === s} onClick={() => act.profile({ squad: data.profile.squad === s ? null : s })}>{s}</button>
-          ))}</div>
-        </fieldset>
         <p className="muted small">Entrou como {session.user.email}. {saved} {saved === 1 ? 'versículo salvo' : 'versículos salvos'}.</p>
         <button className="btn wide" onClick={() => api.signOut()}><Icon name="out" />Sair da conta</button>
       </section>
