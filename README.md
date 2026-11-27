@@ -5,11 +5,13 @@ Rise Bible é uma Bíblia digital com devocional diário. Webapp em React + Vite
 ## O que tem
 
 - **Login e cadastro** (nome, e-mail, senha), reenvio do link de confirmação e recuperação de senha por e-mail.
-- **Hoje:** devocional do dia, resposta do “Pra pensar”, desafio, oração e a chama da sequência, que cresce e muda de nível conforme os dias seguidos (Brasa, Faísca, Chama, Fogueira, Incêndio e Fogo que não apaga).
-- **Bíblia** completa (Bíblia Livre, CC BY 3.0 BR): destaques em 3 cores, salvar, anotar e copiar.
-- **Buscar** em todos os versículos, sem depender de acento.
-- **Salvos:** versículos, anotações e o diário com as respostas.
-- **Perfil:** nível, sequência, recorde, total de devocionais, capítulos lidos, calendário do mês.
+- **Início:** sequência atual com a chama e a semana (S T Q Q S S D), versículo do dia, botão de check-in e o devocional do dia (reflexão, “Pra pensar”, desafio e oração). A sequência muda de nível conforme os dias seguidos (Brasa, Faísca, Chama, Fogueira, Incêndio e Fogo que não apaga).
+- **Check-in (+):** “Como foi seu devocional hoje?”, com texto de até 300 caracteres. Publicar marca o devocional como feito na sequência. O texto fica no Diário. Foto e publicação na comunidade virão com o feed (ver `ROADMAP.md`).
+- **Bíblia** completa (Bíblia Livre, CC BY 3.0 BR): destaques em 3 cores, salvar, anotar e copiar. A lupa abre a **busca** em todos os versículos, sem depender de acento.
+- **Comunidade:** em breve.
+- **Perfil:** nível, sequência, recorde, total de devocionais, capítulos lidos, selos (Day N, Foco, Constância, Presença), calendário do mês e o atalho para **Salvos** (versículos, anotações e diário).
+
+Identidade visual: a do app Flame (laranja `#FF5A1F`, preto `#111111`, creme `#FFF4E8`, verde-limão `#A7FF3D`, Poppins e Inter).
 
 ## Rodar no computador
 
@@ -43,7 +45,7 @@ public/data/devocionais.json   31 devocionais (rodam em ciclo pela data)
 public/icons/                  logos e ícones do app
 src/lib/backend.js             Supabase ou modo demonstração (mesma API)
 src/lib/bible.js               Bíblia, datas, sequência e seus níveis
-src/screens/                   Login, Hoje, Bíblia, Buscar, Salvos, Perfil
+src/screens/                   Login, Início, Check-in, Bíblia, Buscar, Comunidade, Salvos, Perfil
 supabase/schema.sql            tabelas + RLS + trigger de perfil
 ```
 

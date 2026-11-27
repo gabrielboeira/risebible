@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Mark } from '../components/ui.jsx'
+import { FlameMark } from '../components/ui.jsx'
 import { api, authError, REDIRECT_ERR } from '../lib/backend.js'
 
 export default function Auth({ demo }) {
@@ -43,10 +43,11 @@ export default function Auth({ demo }) {
     <div className="auth">
       <div className="auth-body">
         <div className="auth-head">
-          <Mark className="auth-mark" />
-          <h1 className="auth-brand"><span className="auth-rise">Rise</span> <span className="auth-sub">Bible</span></h1>
+          <FlameMark live className="auth-flame" />
+          <h1 className="auth-brand">rise bible<b aria-hidden="true">+</b></h1>
         </div>
         <p className="auth-lead">Bíblia, devocional diário e sua sequência com Deus.</p>
+        <div className="auth-card">
 
         {mode !== 'senha' && (
           <div className="seg" role="tablist">
@@ -71,7 +72,8 @@ export default function Auth({ demo }) {
           {mode === 'entrar' && <button type="button" className="link" onClick={() => swap('senha')}>Esqueci minha senha</button>}
           {mode === 'senha' && <button type="button" className="link" onClick={() => swap('entrar')}>Voltar para entrar</button>}
         </form>
-        {demo && <p className="demo">Modo demonstração: as contas ficam só neste navegador. Conecte o Supabase para login de verdade.</p>}
+        </div>
+        {demo &&<p className="demo">Modo demonstração: as contas ficam só neste navegador. Conecte o Supabase para login de verdade.</p>}
       </div>
     </div>  
   )
