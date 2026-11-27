@@ -19,8 +19,34 @@ export function authError(e) {
   if (m.includes('email not confirmed')) return 'Confirme seu e-mail pelo link que enviamos e depois entre.'
   if (m.includes('rate limit')) return 'Muitas tentativas. Espere um minuto e tente de novo.'
   if (m.includes('fetch')) return 'Sem conexão. Verifique a internet e tente de novo.'
+  if (m.includes('tempo esgotado')) return 'O servidor demorou demais para responder. Verifique a internet e tente de novo.'
   return e?.message || 'Algo deu errado. Tente de novo.'
 }
+
+// Rejeita se a promessa não terminar em `ms` (evita tela de carregamento eterna)
+export function withTimeout(p, ms = 15000) {
+  let t
+  return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('tempo esgotado')), ms) })]).finally(() => clearTimeout(t))
+}
+
+// Erro devolvido pelo Supabase na volta do link do e-mail, ex.: #error=access_denied&error_code=otp_expired
+// Lido uma vez ao abrir o app; o hash é limpo para o erro não voltar ao recarregar.
+export const REDIRECT_ERR = (() => {
+  try {
+    const h = new URLSearchParams(location.hash.slice(1))
+    if (!h.get('error') && !h.get('error_code')) return null
+    history.replaceState(null, '', location.pathname + location.search)
+    const code = h.get('error_code') || h.get('error')
+    const expired = code === 'otp_expired'
+    return {
+      code,
+      expired,
+      msg: expired
+        ? 'Esse link de confirmação expirou ou já foi usado. Tente entrar com seu e-mail e senha. Se pedir confirmação, reenvie o link abaixo e abra só o e-mail mais recente.'
+        : 'Não foi possível confirmar pelo link (' + (h.get('error_description') || code) + '). Tente entrar ou peça um novo link.',
+    }
+  } catch { return null }
+})()
 
 /* ---------------- modo demonstração ---------------- */
 const LS = {
@@ -36,12 +62,12 @@ const hash = s => { let h = 5381; for (const c of s) h = ((h << 5) + h + c.charC
 const demo = {
   async session() { const id = LS.get('rise:session', null); return id && demoUsers()[id] ? { user: { id, email: demoUsers()[id].email } } : null },
   onChange(f) { demoListeners.push(f); return () => { demoListeners = demoListeners.filter(x => x !== f) } },
-  async signUp({ name, squad, email, password }) {
+  async signUp({ name, email, password }) {
     if (password.length < 6) throw new Error('senha curta')
     const users = demoUsers(), id = 'u' + hash(email.toLowerCase())
     if (users[id]) throw new Error('já existe')
     users[id] = { email: email.toLowerCase(), pw: hash(password) }; LS.set('rise:users', users)
-    LS.set(demoKey(id), { ...empty(), profile: { name, squad } })
+    LS.set(demoKey(id), { ...empty(), profile: { name, squad: null } })
     LS.set('rise:session', id); const s = { user: { id, email } }; demoEmit(s); return { session: s }
   },
   async signIn({ email, password }) {
@@ -50,6 +76,7 @@ const demo = {
     LS.set('rise:session', id); const s = { user: { id, email } }; demoEmit(s); return s
   },
   async resetPassword() { throw new Error('No modo demonstração não há envio de e-mail. Crie outra conta de teste.') },
+  async resendConfirm() { throw new Error('No modo demonstração não há envio de e-mail. Crie outra conta de teste.') },
   async signOut() { LS.set('rise:session', null); demoEmit(null) },
   async load(uid) { return { ...empty(), ...LS.get(demoKey(uid), {}) } },
   async save(uid, data) { LS.set(demoKey(uid), data) },
@@ -57,12 +84,15 @@ const demo = {
 
 /* ---------------- Supabase ---------------- */
 const cloud = {
-  async session() { const { data } = await sb.auth.getSession(); return data.session },
+  async session() { const { data, error } = await sb.auth.getSession(); if (error) throw error; return data.session },
   onChange(f) { const { data } = sb.auth.onAuthStateChange((_e, s) => f(s)); return () => data.subscription.unsubscribe() },
-  async signUp({ name, squad, email, password }) {
-    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { name, squad } } })
+  async signUp({ name, email, password }) {
+    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { name }, emailRedirectTo: location.origin } })
     if (error) throw error
     return data // data.session é null quando o projeto exige confirmar e-mail
+  },
+  async resendConfirm(email) {
+    const { error } = await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: location.origin } }); if (error) throw error
   },
   async signIn({ email, password }) {
     const { data, error } = await sb.auth.signInWithPassword({ email, password }); if (error) throw error; return data.session
@@ -70,7 +100,8 @@ const cloud = {
   async resetPassword(email) {
     const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin }); if (error) throw error
   },
-  async signOut() { await sb.auth.signOut() },
+  // 'local' apaga a sessão deste aparelho antes de chamar o servidor: sair funciona mesmo sem rede
+  async signOut() { await sb.auth.signOut({ scope: 'local' }) },
   async load(uid) {
     const [p, d, m, pl] = await Promise.all([
       sb.from('profiles').select('name,squad').eq('id', uid).maybeSingle(),

@@ -4,12 +4,12 @@ Rise Bible é uma Bíblia digital com devocional diário. Webapp em React + Vite
 
 ## O que tem
 
-- **Login e cadastro** (nome, squad, e-mail, senha) e recuperação de senha por e-mail.
+- **Login e cadastro** (nome, e-mail, senha), reenvio do link de confirmação e recuperação de senha por e-mail.
 - **Hoje:** devocional do dia, resposta do “Pra pensar”, desafio, oração e a chama da sequência, que cresce e muda de nível conforme os dias seguidos (Brasa, Faísca, Chama, Fogueira, Incêndio e Fogo que não apaga).
 - **Bíblia** completa (Bíblia Livre, CC BY 3.0 BR): destaques em 3 cores, salvar, anotar e copiar.
 - **Buscar** em todos os versículos, sem depender de acento.
 - **Salvos:** versículos, anotações e o diário com as respostas.
-- **Perfil:** nível, sequência, recorde, total de devocionais, capítulos lidos, calendário do mês e squad.
+- **Perfil:** nível, sequência, recorde, total de devocionais, capítulos lidos, calendário do mês.
 
 ## Rodar no computador
 
