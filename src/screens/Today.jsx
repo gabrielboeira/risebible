@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FlameMark, Icon } from '../components/ui.jsx'
+import { Icon, Mascot } from '../components/ui.jsx'
 import { MES, SEM, PLANS, ymd, addDays, today, devFor, parseRef, refName, copyText, flameLevel, flameName } from '../lib/bible.js'
 
 const LETRAS = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'] // segunda → domingo
@@ -31,7 +31,7 @@ export default function Today({ data, act, say, openRef, openCheckin, st }) {
             <p className="streak-n"><b>{st.cur}</b> {st.cur === 1 ? 'dia' : 'dias'}</p>
             <p className="tier"><Icon name="flame" size={15} />{flameName(st.cur)}</p>
           </div>
-          <FlameMark live className="streak-flame" />
+          <Mascot className="streak-mascot" />
         </div>
         <ol className="week" aria-label="Esta semana">
           {week.map((d, i) => {
