@@ -2,7 +2,7 @@
 
 const FLAME_D = 'M50 3C57 24 86 40 86 76A36 36 0 0 1 14 76C14 56 26 45 31 30C36 42 42 47 47 47C44 33 45 16 50 3Z'
 
-// Símbolo: chama laranja com "+" verde. `live` liga a animação leve (CSS; desliga com reduced-motion).
+// Símbolo: chama laranja com "+" verde, estática. `live` dá o brilho laranja das versões grandes.
 export function FlameMark({ className = '', live = false }) {
   return (
     <svg className={'flame-mark' + (live ? ' live' : '') + (className ? ' ' + className : '')} viewBox="0 0 100 120" aria-hidden="true">

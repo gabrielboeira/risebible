@@ -71,17 +71,8 @@ a { color: var(--link); text-underline-offset: 3px }
 
 /* ---------- marca ---------- */
 .flame-mark { display: block; width: 32px; height: 38px; flex: none; overflow: visible }
-.flame-mark .fm-body, .flame-mark .fm-plus { transform-box: fill-box }
-.flame-mark.live .fm-body { transform-origin: 50% 100%; animation: flicker 2.6s ease-in-out infinite }
-.flame-mark.live .fm-plus { transform-origin: 50% 50%; animation: plus 2.6s ease-in-out infinite }
+/* chama estática; nas versões grandes (.live) ganha só um brilho laranja */
 .flame-mark.live { filter: drop-shadow(0 6px 18px rgba(255, 90, 31, .45)) }
-@keyframes flicker {
-  0%, 100% { transform: scale(1, 1) rotate(0) }
-  25% { transform: scale(.97, 1.04) rotate(-1.6deg) }
-  50% { transform: scale(1.02, .98) rotate(.8deg) }
-  75% { transform: scale(.99, 1.03) rotate(1.4deg) }
-}
-@keyframes plus { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.08) } }
 .logo { display: inline-flex; align-items: center; gap: 8px }
 .logo .flame-mark { width: 30px; height: 36px }
 .logo-t { font: 700 24px/1 var(--head); color: var(--laranja); letter-spacing: -.02em; white-space: nowrap }
