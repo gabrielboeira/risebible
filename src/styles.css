@@ -215,9 +215,10 @@ textarea { min-height: 120px; resize: vertical; line-height: 1.55 }
 .streak-n b { font: 800 clamp(64px, 19vw, 84px)/.9 var(--head); color: var(--laranja-big); letter-spacing: -.04em; font-variant-numeric: tabular-nums; animation: pop .5s var(--spring) both }
 @keyframes pop { from { transform: scale(.85); opacity: 0 } }
 .tier { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--preto); background: var(--limao); padding: 5px 11px 5px 8px; border-radius: 99px }
-.streak-flame { width: 96px; height: 116px; margin-right: 4px }
-.streakcard.lv0 .streak-flame { opacity: .45; filter: grayscale(.6) }
-.streakcard.lv4 .streak-flame, .streakcard.lv5 .streak-flame { width: 108px; height: 130px }
+/* mascote do Flame no lugar da chama; com sequência zerada ele fica "apagado" */
+.mascot { display: block; height: auto; user-select: none; -webkit-user-drag: none }
+.streak-mascot { width: 112px; margin: -8px -6px -10px 0; flex: none }
+.streakcard.lv0 .streak-mascot { opacity: .55; filter: grayscale(.85) }
 .week { list-style: none; margin: 18px -6px 0; padding: 14px 0 0; border-top: 1.5px dashed #E4D2BE; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px }
 .week button { width: 100%; min-height: 64px; display: grid; justify-items: center; align-content: center; gap: 6px; border-radius: 16px; border: 0; background: none; color: var(--preto); transition: background .16s }
 .week button:disabled { cursor: default; opacity: .45 }
@@ -278,7 +279,7 @@ textarea { min-height: 120px; resize: vertical; line-height: 1.55 }
 
 /* ---------- comunidade (em breve) ---------- */
 .community { min-height: calc(100dvh - 200px); display: grid; justify-items: center; align-content: center; gap: 14px; text-align: center; padding: 24px 8px }
-.cm-flame { width: 96px; height: 116px; margin-bottom: 6px }
+.cm-mascot { width: 150px; margin-bottom: 4px }
 .soon { font-size: 13px; font-weight: 700; color: var(--preto); background: var(--limao); padding: 4px 12px; border-radius: 99px }
 .community h1 { font-size: 32px }
 .community p { color: var(--tx-2); max-width: 34ch; font-size: 16px }

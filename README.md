@@ -42,7 +42,8 @@ Sem as chaves do Supabase, o app abre em **modo demonstração**: as contas e o 
 ```
 public/data/biblia.json        texto bíblico (66 livros, 31.104 versículos)
 public/data/devocionais.json   31 devocionais (rodam em ciclo pela data)
-public/icons/                  logos e ícones do app
+public/icons/                  ícones do app (quadrado laranja com a chama branca)
+public/flame/                  mascote (Bíblia com fogo) e chama originais do Flame
 src/lib/backend.js             Supabase ou modo demonstração (mesma API)
 src/lib/bible.js               Bíblia, datas, sequência e seus níveis
 src/screens/                   Login, Início, Check-in, Bíblia, Buscar, Comunidade, Salvos, Perfil

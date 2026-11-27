@@ -1,21 +1,27 @@
-// Identidade Flame no Rise Bible: chama laranja com "+" verde-limão, ícones de linha com cantos arredondados.
+// Identidade Flame no Rise Bible: chama de contorno laranja com miolo creme e "+", ícones de linha arredondados.
 
-const FLAME_D = 'M50 3C57 24 86 40 86 76A36 36 0 0 1 14 76C14 56 26 45 31 30C36 42 42 47 47 47C44 33 45 16 50 3Z'
+// Chama redesenhada em vetor a partir de public/flame/chama.png (nítida em qualquer tamanho)
+const OUTER = 'M52 6C56 18 65 29 70 41C72 46 75 47 77 43C79 40 80 37 80 33C92 47 96 62 96 78C96 104 76 124 50 124C24 124 4 104 4 80C4 64 10 50 20 37C21 44 24 49 29 51C30 40 35 29 41 21C46 15 50 11 52 6Z'
+const INNER = 'M53.4 46C56.7 57 63.4 62 65.1 71C66.8 67 68.5 63 68.5 59C75.2 69 76.9 80 75.2 90C73.5 104 63.4 112 50 112C36.6 112 26.5 104 24.8 92C24 82 26.5 73 31.5 65C33.2 71 35.7 75 39.1 76C39.9 63 46.6 53 53.4 46Z'
 
-// Símbolo: chama laranja com "+" verde, estática. `live` dá o brilho laranja das versões grandes.
-export function FlameMark({ className = '', live = false }) {
+// Símbolo do Flame. `white` = versão de linha branca (para fundo laranja); `live` = brilho laranja nas versões grandes.
+export function FlameMark({ className = '', live = false, white = false }) {
+  const c = white ? '#FFFFFF' : '#FF5A1F'
   return (
-    <svg className={'flame-mark' + (live ? ' live' : '') + (className ? ' ' + className : '')} viewBox="0 0 100 120" aria-hidden="true">
-      <g className="fm-body"><path d={FLAME_D} fill="#FF5A1F" /></g>
-      <g className="fm-plus" fill="#A7FF3D">
-        <rect x="44" y="61" width="12" height="34" rx="5" />
-        <rect x="33" y="72" width="34" height="12" rx="5" />
-      </g>
+    <svg className={'flame-mark' + (live ? ' live' : '') + (className ? ' ' + className : '')} viewBox="-4 0 110 132" aria-hidden="true">
+      <path d={OUTER} fill={white ? 'none' : '#FFF4E8'} stroke={c} strokeWidth="8" strokeLinejoin="round" />
+      <path d={INNER} fill={white ? 'none' : c} stroke={white ? c : 'none'} strokeWidth="7" strokeLinejoin="round" />
+      <g fill={c}><rect x="86" y="8" width="6" height="18" rx="3" /><rect x="80" y="14" width="18" height="6" rx="3" /></g>
     </svg>
   )
 }
 
-// Marca: chama + "rise bible" em Poppins Bold laranja, com o "+" verde no lugar do "+" do Flame
+// Mascote do Flame: a Bíblia com fogo (public/flame/mascote.png)
+export function Mascot({ className = '', alt = '' }) {
+  return <img className={'mascot' + (className ? ' ' + className : '')} src={import.meta.env.BASE_URL + 'flame/mascote.png'} alt={alt} width="140" height="180" decoding="async" />
+}
+
+// Marca: chama + "rise bible" em Poppins Bold laranja, com o "+" verde
 export function Logo({ small }) {
   return (
     <div className={'logo' + (small ? ' sm' : '')} role="img" aria-label="Rise Bible">
